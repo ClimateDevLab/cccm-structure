@@ -106,7 +106,7 @@ metadata = pd.read_csv('data/processed/metadata.csv')
 
 eins = pd.read_csv('data/processed/eins.csv')
 name_to_ein = eins.set_index('org').ein.to_dict()
-fdn_namemap = pd.read_csv('data/processed/fdn_namemap.csv', index_col=0, squeeze=True).to_dict()
+fdn_namemap = pd.read_csv('data/processed/fdn_namemap.csv', index_col=0)['0'].to_dict()
 fdn_standard_name = {v: k for k, v in fdn_namemap.items()}
 
 employees = employees[employees.name.notnull()]
