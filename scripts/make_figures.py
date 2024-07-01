@@ -23,6 +23,10 @@ currpath = Path(__file__)
 if not currpath.name == 'cccm-structure':
     os.chdir(currpath.parent.parent)
 
+# add cccm-structure/scripts to path so we can import the scripts
+import sys 
+sys.path.append('./scripts')
+
 from scripts import topic, interlocks, datasets
 
 shapes = ['v', 's', 'o', '^', 'D', 'P', 'X', 'd', 'p', 'h', '8']
@@ -119,7 +123,7 @@ def figure_2(axes):
         top_members = pd.Series(degrees).sort_values(ascending=False).head(5)
 
         ax1.text(0.65, 0.6, 'Top members by degree', transform=ax1.transAxes, fontsize=16)
-        for j, (name, degree) in enumerate(top_members.iteritems()):
+        for j, (name, degree) in enumerate(top_members.items()):
             ax1.text(0.65, 0.5 - j * 0.1, name.title().replace("'S", "'s") + " (%i)" % degree, transform=ax1.transAxes,
                      fontsize=14)
 
@@ -233,127 +237,90 @@ def figure_4(ax):
     return ax
 
 
-# # For figures 1 and 2, combine them in axes like so:
-# # |     |   2a   |
-# # |  1  |   2b   |
-# # |     |   2c   |
-#
-# fig = plt.figure(figsize=(17, 10))
-# gs = fig.add_gridspec(3, 2, width_ratios=[1.5, 1], height_ratios=[1, 1, 1])
-# ax1 = fig.add_subplot(gs[:, 0])
-# axes = [fig.add_subplot(gs[i, 1]) for i in range(3)]
-# # Make axes share x axis
-# for i in range(1, 3):
-#     axes[i].sharex(axes[0])
-#
-# figure_1(ax1)
-# figure_2(axes)
-#
-# # Add subplot labels
-# ax1.text(0, 1.05, 'A', transform=ax1.transAxes, fontsize=24, fontweight='bold')
-# axes[0].text(-0.1, 1.05, 'B', transform=axes[0].transAxes, fontsize=24, fontweight='bold')
-# axes[1].text(-0.1, 1.05, 'C', transform=axes[1].transAxes, fontsize=24, fontweight='bold')
-# axes[2].text(-0.1, 1.05, 'D', transform=axes[2].transAxes, fontsize=24, fontweight='bold')
-#
-# plt.tight_layout()
-# plt.savefig('figures/interlock_network.pdf', bbox_inches='tight')
-# plt.show()
-#
-# For figures 3a, 3b, 4, combine them in axes like so:
-# |  3a  |     |
-# |------|  4  |
-# |  3b  |     |
 
-# fig = plt.figure(figsize=(10, 8))
-# gs = fig.add_gridspec(2, 2, width_ratios=[1.5, 1], height_ratios=[1, 1])
-#
-# axes = [fig.add_subplot(gs[i, 0]) for i in range(2)]
-#
-# ax4 = fig.add_subplot(gs[:, 1])
-#
-# figure_3(axes)
-# figure_4(ax4)
+fig = plt.figure(figsize=(17, 10))
+gs = fig.add_gridspec(3, 2, width_ratios=[1.5, 1], height_ratios=[1, 1, 1])
+ax1 = fig.add_subplot(gs[:, 0])
+axes = [fig.add_subplot(gs[i, 1]) for i in range(3)]
+# Make axes share x axis
+for i in range(1, 3):
+    axes[i].sharex(axes[0])
 
-# fig.savefig('figures/interlocks_grants_topics.pdf', bbox_inches='tight')
-# fig.savefig('figures/interlocks_grants_topics.png', bbox_inches='tight', dpi=300)
-# plt.show()
+figure_1(ax1)
+figure_2(axes)
 
 # Add subplot labels
-# axes[0].text(-0.1, 1.05, 'A', transform=axes[0].transAxes, fontsize=24, fontweight='bold')
-# axes[1].text(-0.1, 1.05, 'B', transform=axes[1].transAxes, fontsize=24, fontweight='bold')
-# ax4.text(-0.1, 1.05, 'C', transform=ax4.transAxes, fontsize=24, fontweight='bold')
-#
-# plt.tight_layout()
-# plt.savefig('figures/social_financial_semantic_ties.pdf', bbox_inches='tight')
-# plt.savefig('figures/social_financial_semantic_ties.png', bbox_inches='tight', dpi=300)
-# plt.show()
+ax1.text(0, 1.05, 'A', transform=ax1.transAxes, fontsize=24, fontweight='bold')
+axes[0].text(-0.1, 1.05, 'B', transform=axes[0].transAxes, fontsize=24, fontweight='bold')
+axes[1].text(-0.1, 1.05, 'C', transform=axes[1].transAxes, fontsize=24, fontweight='bold')
+axes[2].text(-0.1, 1.05, 'D', transform=axes[2].transAxes, fontsize=24, fontweight='bold')
+
+plt.tight_layout()
+plt.savefig('figures/interlock_network.pdf', bbox_inches='tight')
 
 
-# # Figure 5: data collection and summary statistics
-# # first row: topic modeling
-# fig, ax = plt.subplots(1, 1, figsize=(10, 5))
-#
-# matplotlib.rcParams['font.family'] = 'sans-serif'
-# matplotlib.rcParams['font.size'] = 16
-#
-# # Plot most common topics with top words
-# # as a horizontal bar chart showing topic proportion in corpus
-# # with top words labeling bars at their ends
-# n_top_topics = 10
-# retained_topics = topic.topics_to_retain
-# topic_props = topic.topic_proportions[retained_topics].sum(0)
-# topic_props = topic_props / topic_props.sum()
-# topic_props = topic_props.sort_values(ascending=False)[:n_top_topics]
-# topic_props = topic_props.sort_values(ascending=True)
-# topic_props.plot.barh(ax=ax, color='darkgrey', zorder=-100, edgecolor='k', linewidth=1.5)
-# # Rescale x axis to make room for labels
-# curr_xmax = ax.get_xlim()[1]
-# ax.set_xlim(0, curr_xmax * 1.5)
-#
-# labels = topic.topic_labels.set_index('topic').reindex(topic_props.index).iloc[:n_top_topics]
-# for i, (t, row) in enumerate(labels.iterrows()):
-#     topwords = ', '.join(row[['V1', 'V2', 'V3', 'V4', 'V5']].values)
-#     ax.text(topic_props[t] * 1.05, i, topwords, ha='left', va='center', fontsize=12)
-#
-# ax.set_yticklabels(labels.label.values, fontsize=16)
-#
-# ax.set_xlabel('Topic proportion in corpus', fontsize=16)
-# ax.set_ylabel('Topic', fontsize=16)
-# ax.set_title('Most common topics in corpus', fontsize=20)
-#
-# # Remove all but left spine
-# ax.spines['right'].set_visible(False)
-# ax.spines['top'].set_visible(False)
-# ax.spines['bottom'].set_visible(False)
-#
-# fig.savefig('figures/topic_modeling_summary.pdf', bbox_inches='tight')
-# fig.savefig('figures/topic_modeling_summary.png', bbox_inches='tight', dpi=300)
-# fig.show()
-#
-# # Figure 6: Social and Topic distance distributions between modules
-# # |  6a  |
-# # |  6b  |
-#
-# # Calculate social distance distributions
-# matplotlib.rcParams['mathtext.fontset'] = 'cm'
-# matplotlib.rcParams['font.family'] = 'STIXGeneral'
-# fig, ax = plt.subplots(1,1, figsize=(10, 3.5))
-#
-# module_1_members = interlocks.partition[interlocks.partition == 1].index
-# for module in [1, 2, 3]:
-#     members = interlocks.partition[interlocks.partition == module].index
-#     # Get social distance distribution for module
-#     social_distance = interlocks.social_distance.loc[module_1_members, members]
-#
-#     # Plot histogram
-#     sns.distplot(social_distance, ax=ax, label='Module {}'.format(module), kde=False, hist_kws={'alpha': 0.5},
-#                  bins = np.arange(0, 6.1, 0.25), norm_hist=True)
-#
-# ax.legend(fontsize=16, loc='upper right', frameon=False)
-# ax.set_xlabel('Social distance', fontsize=16)
-# ax.set_ylabel('Density', fontsize=16)
-# ax.set_title('Social distance distributions to members of module 1', fontsize=20)
-#
-# plt.tight_layout()
-# fig.savefig('figures/social_distance_distributions.pdf', bbox_inches='tight')
+fig = plt.figure(figsize=(10, 8))
+gs = fig.add_gridspec(2, 2, width_ratios=[1.5, 1], height_ratios=[1, 1])
+
+axes = [fig.add_subplot(gs[i, 0]) for i in range(2)]
+
+ax4 = fig.add_subplot(gs[:, 1])
+
+figure_3(axes)
+figure_4(ax4)
+
+fig.savefig('figures/interlocks_grants_topics.pdf', bbox_inches='tight')
+fig.savefig('figures/interlocks_grants_topics.png', bbox_inches='tight', dpi=300)
+plt.show()
+
+# Add subplot labels
+axes[0].text(-0.1, 1.05, 'A', transform=axes[0].transAxes, fontsize=24, fontweight='bold')
+axes[1].text(-0.1, 1.05, 'B', transform=axes[1].transAxes, fontsize=24, fontweight='bold')
+ax4.text(-0.1, 1.05, 'C', transform=ax4.transAxes, fontsize=24, fontweight='bold')
+
+plt.tight_layout()
+plt.savefig('figures/social_financial_semantic_ties.pdf', bbox_inches='tight')
+plt.savefig('figures/social_financial_semantic_ties.png', bbox_inches='tight', dpi=300)
+
+
+# Figure 5: data collection and summary statistics
+# first row: topic modeling
+fig, ax = plt.subplots(1, 1, figsize=(10, 5))
+
+matplotlib.rcParams['font.family'] = 'sans-serif'
+matplotlib.rcParams['font.size'] = 16
+
+# Plot most common topics with top words
+# as a horizontal bar chart showing topic proportion in corpus
+# with top words labeling bars at their ends
+n_top_topics = 10
+retained_topics = topic.topics_to_retain
+topic_props = topic.topic_proportions[retained_topics].sum(0)
+topic_props = topic_props / topic_props.sum()
+topic_props = topic_props.sort_values(ascending=False)[:n_top_topics]
+topic_props = topic_props.sort_values(ascending=True)
+topic_props.plot.barh(ax=ax, color='darkgrey', zorder=-100, edgecolor='k', linewidth=1.5)
+# Rescale x axis to make room for labels
+curr_xmax = ax.get_xlim()[1]
+ax.set_xlim(0, curr_xmax * 1.5)
+
+labels = topic.topic_labels.set_index('topic').reindex(topic_props.index).iloc[:n_top_topics]
+for i, (t, row) in enumerate(labels.iterrows()):
+    topwords = ', '.join(row[['V1', 'V2', 'V3', 'V4', 'V5']].values)
+    ax.text(topic_props[t] * 1.05, i, topwords, ha='left', va='center', fontsize=12)
+
+ax.set_yticklabels(labels.label.values, fontsize=16)
+
+ax.set_xlabel('Topic proportion in corpus', fontsize=16)
+ax.set_ylabel('Topic', fontsize=16)
+ax.set_title('Most common topics in corpus', fontsize=20)
+
+# Remove all but left spine
+ax.spines['right'].set_visible(False)
+ax.spines['top'].set_visible(False)
+ax.spines['bottom'].set_visible(False)
+
+fig.savefig('figures/topic_modeling_summary.pdf', bbox_inches='tight')
+fig.savefig('figures/topic_modeling_summary.png', bbox_inches='tight', dpi=300)
+fig.show()
 
