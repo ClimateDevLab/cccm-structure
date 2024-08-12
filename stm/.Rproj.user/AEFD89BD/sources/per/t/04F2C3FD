@@ -1,0 +1,26 @@
+{
+    "id": "04F2C3FD",
+    "path": "~/Desktop/Projects/CDL/cccm_structure/cccm-structure/stm/v.Rmd",
+    "project_path": "v.Rmd",
+    "type": "r_markdown",
+    "hash": "3975114250",
+    "contents": "",
+    "dirty": false,
+    "created": 1689369323592.0,
+    "source_on_save": false,
+    "relative_order": 1,
+    "properties": {
+        "chunk_output_type": "inline",
+        "cursorPosition": "26,0",
+        "scrollLine": "24",
+        "Source": "Source"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1652452220,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1689385850904,
+    "read_only": false,
+    "read_only_alternatives": []
+}

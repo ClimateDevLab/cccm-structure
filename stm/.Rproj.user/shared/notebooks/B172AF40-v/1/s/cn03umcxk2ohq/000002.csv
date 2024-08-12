@@ -1,0 +1,5 @@
+"0","```r
+ts <- findThoughts(stm.100, texts = meta$text, n = 1, topics = c(k))
+
+
+```"

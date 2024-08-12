@@ -1,0 +1,9 @@
+"0","```r
+N <- 8
+sortcond <- exp(stm.100$beta$logbeta[[1]][,vocab==\"climat\"])
+sortcond <- sortcond * exp(stm.100$beta$logbeta[[1]][,vocab==\"energi\"])
+sortcond <- sortcond * exp(stm.100$beta$logbeta[[1]][,vocab==\"environment\"])
+topics <- order(sortcond, decreasing = T)[1:8]
+model <- stm.100
+labels <- labelTopics(model, topics)
+```"

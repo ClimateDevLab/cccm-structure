@@ -1,0 +1,5 @@
+"0","```r
+labels <- labelTopics(stm.50, n = 10)
+write.csv(labels$prob, \"topiclabels.csv\")
+write.csv(stm.50$theta, \"topicproportions.csv\")
+```"

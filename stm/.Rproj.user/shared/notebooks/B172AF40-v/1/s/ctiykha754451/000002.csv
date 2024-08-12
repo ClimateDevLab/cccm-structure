@@ -1,0 +1,64 @@
+"0","```r
+nrows <- 4 #ceiling(sqrt(N))
+ncols <- 2 #floor(sqrt(N))
+
+# png(file = \"SampleClimateTopics.png\", 
+#     width = ncols * 4, height = nrows * 2,
+#     units = \"in\", res = 300)
+
+par(mfrow = c(nrow, ncol))
+par(cex = 0.9)
+par(mar = c(1,1,0,0), oma = c(4,4,0.5,0.5))
+par(mgp = c(2, 0.6, 0))
+
+for (i in 1:N) {
+
+    t <- topics[i]
+    
+    plotdata <- moving_window(model, t, meta$year, 0.95)
+    
+    plot(plotdata$x, plotdata$y, 
+       xlim = c(1995, 2020), ylim = c(0, 0.05), 
+       lwd = 2, col = \"darkgrey\", type = 'l', 
+       xaxt = 'n', yaxt = 'n',
+       xlab = \"year\", ylab = \"proportion\")
+
+    grid()
+    
+    pcol <- rgb(0.1,0.3,0.9,0.1)
+    
+    polygon(
+      c(plotdata$x, rev(plotdata$x)),
+      c(plotdata$conf_top, rev(plotdata$conf_bot)), 
+      col = pcol
+      )
+    
+    
+    #abline(v = c(2015,2016), col = \"grey60\")
+
+    box(col = \"grey60\")
+    
+    mtext(str_c(\"Topic \",t,\": \"), side = 3, 
+          line = -1.5, adj = 0, cex = 1)
+    mtext(str_c(labels$prob[t,1:4], collapse = \" \"), 
+          side = 3, line = -2.5, adj = 0, cex = 0.8)
+    
+    if (i %in% seq(1, N-ncols+1, ncols)) {
+            axis(2, 
+                 col = \"grey40\", 
+                 col.axis = \"grey20\", 
+                 at = seq(0, 0.05, 0.01),
+                 las = 1)
+    }
+    if (i %in% (N-ncols+1):N) {
+            axis(1, 
+                 col = \"grey40\", 
+                 col.axis = \"grey20\", 
+                 at = seq(1995, 2020, 1),
+                 las = 1)
+    }
+}
+
+mtext(\"Year\", side = 1, outer = TRUE, cex = 0.8, line = 2.5)
+mtext(\"Estimated topic proportion\", side = 2, outer = TRUE, cex = 0.8, line = 2.5)
+```"

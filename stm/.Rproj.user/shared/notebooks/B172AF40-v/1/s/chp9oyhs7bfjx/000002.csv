@@ -1,0 +1,8 @@
+"0","```r
+climate_topics <- c(9,89,91,21,70,51)
+examples <- list()
+for (k in climate_topics) {
+  examples[str_c(\"X\",k)] <- findThoughts(stm.100, texts = meta$text, n = 1, topics = c(k))$docs[1]
+}
+write.csv(examples, file = \"topicExamples.csv\")
+```"

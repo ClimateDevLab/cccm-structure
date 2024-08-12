@@ -1,0 +1,31 @@
+"0","```r
+library(boot)
+library(lubridate)
+
+boot_fn <- function(fitdata, indices) {
+  d <- fitdata[indices,]
+  d <- d[order(d$x),]
+  n = nrow(d)
+  k <- min(ceiling(n/10), n/2)  # Window size
+  kernel <- c(dnorm(seq(0, 3, length.out=k)))
+  kernel <- c(kernel, rep(0, n - 2*length(kernel) + 1), rev(kernel[-1]))
+  kernel <- kernel / sum(kernel)
+  y <- Re(convolve(d$y, kernel))
+  return(y)
+}
+
+moving_window <- function(model, t, years, ci) {
+  o <- order(years)
+  years <- years[o]
+  theta <- model$theta[o,t]
+  fitdata <- data.frame(list(x = years, y = theta))
+  booted <- boot(fitdata, R = 100, statistic = boot_fn)
+  
+  ci <- (1 - ci) / 2
+  
+  conf_top <- apply(booted$t, 2, function(x) quantile(x, 1-ci, na.rm = T))
+  conf_bot <- apply(booted$t, 2, function(x) quantile(x, ci, na.rm = T))
+  
+  return(data.frame(x=years, y=booted$t0, conf_top = conf_top, conf_bot=conf_bot))
+}
+```"
